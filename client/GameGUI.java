@@ -1,24 +1,31 @@
 package client;
+import java.awt.GridLayout;
+
 import javax.swing.*;
 public class GameGUI {
-private InitialPanel initialPanel;
-private LoginPanel loginPanel;
-private CreateAccountPanel createAccount;
-JFrame ClientGUI;
-private GameControl controller;
+
 	//constructor
-	 public GameGUI()
+	 private GameGUI()
 	{
-		
-	}
-	 public void main(String args[])
-	 {
+		 JFrame ClientGUI = new JFrame();
+		 InitialPanel initialPanel = new InitialPanel();
+		 LoginPanel loginPanel = new LoginPanel();
+		 CreateAccountPanel createAccount = new CreateAccountPanel();
+		 GameControl controller;
+
+		 	ClientGUI.setLayout(new GridLayout(3,1));
+		 	ClientGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		 	ClientGUI.setTitle("BATTLESHIP NETWORK");
 		//call & add initial panel
-			ClientGUI.add(initialPanel.getInitialPanel());
+			ClientGUI.add(initialPanel);
 			//call & add login panel
-			//ClientGUI.add(loginPanel.getLoginPanel());
-			ClientGUI.add(createAccount);
-			
-			
+			ClientGUI.add(loginPanel);
+			ClientGUI.pack();
+			ClientGUI.setVisible(true);
+			//ClientGUI.add(createAccount);
+	}
+	 public static void main(String args[])
+	 {
+		 new GameGUI();
 	 }
 }
