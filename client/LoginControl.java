@@ -1,40 +1,66 @@
 package client;
 
-import java.awt.event.ActionEvent;
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.io.IOException;
 
-import javax.swing.JPanel;
-
-public class LoginControl {
+public class LoginControl implements ActionListener {
+	
 	// Private data fields for the container and game client.
 	private JPanel container;
 	private GameClient client;
-	private LoginData data;
+		
+	// Constructor for the login controller
 	public LoginControl(JPanel container, GameClient client) {
 		this.container = container;
 		this.client = client;
 	}
 	
-	public void actionPerformed(ActionEvent e)
-	{
+	// Handle button clicks
+	public void actionPerformed(ActionEvent ae) {
+		// Get the name of the button clicked
+		String command = ae.getActionCommand();
 		
-	}
-	//handlers for buttons pressed
-	public void loginAttempt(String username, String password)
-	{
-		if (validateLogin(username,password))
-				{
-				data.setUsername(username);
-				data.setPassword(password);
-				}
-		//display error message on LoginPanel
-		else {}
-	}
-	//clear Panel & madeCreateAccountPanel the primary panel
-	public void setUpNewAccount() {
+		// The Cancel button takes the user back to the InitialPanel
+		if(command == "Cancel") {
+			CardLayout cardLayout = (CardLayout)container.getLayout();
+			cardLayout.show(container, "1");
+		}
+		
+		// The Submit button submits the login information to the server
+		else if(command == "Submit") {
+			// Get the username and password the user entered
+			LoginPanel loginPanel = (LoginPanel)container.getComponent(1);
+			LoginData data = new LoginData(loginPanel.getUsername(), loginPanel.getPassword());
+			
+			// Check the validity of the information locally first
+			if (data.getUsername().equals("") || data.getPassword().equals("")) {
+				displayError("You must enter a username and password.");
+				return;
+			}
+			
+			// Submit the login information to the server
+			try {
+				client.sendToServer(data);
+			}
+			catch (IOException e) {
+				displayError("Error connecting to the server.");
+			}
+		}
 	}
 	
-	private Boolean validateLogin(String username, String password)
-	{
-		return false;
+	// After the login is successful, set the User object and progress to the MenuPanel
+	public void loginSuccess() {
+		LoginPanel loginPanel = (LoginPanel)container.getComponent(1);
+		CardLayout cardLayout = (CardLayout)container.getLayout();
+		cardLayout.show(container, "4");
 	}
+	
+	// Method that displays a message in the error label
+	public void displayError(String error) {
+		LoginPanel loginPanel = (LoginPanel)container.getComponent(1);
+		loginPanel.setError(error);
+	}
+	
 }

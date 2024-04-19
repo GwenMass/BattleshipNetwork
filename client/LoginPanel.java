@@ -1,54 +1,66 @@
 package client;
 
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-public class LoginPanel extends JPanel{
-	//data fields
+public class LoginPanel extends JPanel {
+	// Private data fields for the important GUI components
 	private JTextField usernameField;
-	private JTextField passwordField;
+	private JPasswordField passwordField;
 	private JLabel errorLabel;
-	private JButton loginButton;
-	private JButton newAccount;
-	private LoginControl controller;
-	LoginPanel(){//setup the layout of the UI
-		this.setLayout(new GridLayout(4,2));
+	
+	// Getter for the text in the username field
+	public String getUsername() {
+		return usernameField.getText();
+	}
+	
+	public String getPassword() {
+		return new String(passwordField.getPassword());
+	}
+	
+	// Setter for the error text
+	public void setError(String error) {
+		errorLabel.setText(error);
+	}
+	
+	// Constructor for the Login Panel
+	public LoginPanel(LoginControl lc) {
+		// Create a panel for the labels at the top of the GUI
+		JPanel labelPanel = new JPanel(new GridLayout(2, 1, 5, 5));
+		errorLabel = new JLabel("", JLabel.CENTER);
+		errorLabel.setForeground(Color.RED);
+		JLabel instructionLabel = new JLabel("Enter your username and password to log in.", JLabel.CENTER);
+		labelPanel.add(errorLabel);
+		labelPanel.add(instructionLabel);
 		
-		JLabel usernameLabel = new JLabel("Username:");
-		usernameField = new JTextField();
+		// Create a panel for the login information form
+		JPanel loginPanel = new JPanel(new GridLayout(2, 2, 5, 5));
+	    JLabel usernameLabel = new JLabel("Username:", JLabel.RIGHT);
+	    usernameField = new JTextField(10);
+	    JLabel passwordLabel = new JLabel("Password:", JLabel.RIGHT);
+	    passwordField = new JPasswordField(10);
+	    loginPanel.add(usernameLabel);
+	    loginPanel.add(usernameField);
+	    loginPanel.add(passwordLabel);
+	    loginPanel.add(passwordField);
 		
-		JLabel passwordLabel = new JLabel("Password:");
-		passwordField = new JTextField();
-		
-		loginButton = new JButton("Login!");
-		newAccount = new JButton("Create Account?");
-		
-		//add created elements to the panel
-		this.add(errorLabel);
-		//blank component
-		this.add(new JLabel());
-		//username label & field
-		this.add(usernameLabel);
-		this.add(usernameField);
-		//pasword label & field
-		this.add(passwordLabel);
-		this.add(passwordField);
-		//buttons!
-		this.add(loginButton);
-		this.add(newAccount);
-		
-		//add actionListener to buttons
-		loginButton.addActionListener((ActionEvent e) -> 
-		controller.loginAttempt(usernameField.getText(), passwordField.getText()));
-		
-		newAccount.addActionListener((ActionEvent e) ->
-		controller.setUpNewAccount());
-		
+	    // Create a panel for the buttons.
+	    JPanel buttonPanel = new JPanel();
+	    JButton submitButton = new JButton("Submit");
+	    submitButton.addActionListener(lc);
+	    JButton cancelButton = new JButton("Cancel");
+	    cancelButton.addActionListener(lc);    
+	    buttonPanel.add(submitButton);
+	    buttonPanel.add(cancelButton);
+
+	    // Arrange the three panels in a grid.
+	    JPanel grid = new JPanel(new GridLayout(3, 1, 0, 10));
+	    grid.add(labelPanel);
+	    grid.add(loginPanel);
+	    grid.add(buttonPanel);
+	    this.add(grid);
 	}		
+	
 }
 

@@ -1,16 +1,28 @@
 package client;
 
-import javax.swing.JPanel;
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.io.IOException;
 
-public class MenuControl {
-	// Private data fields for the container and game client.
+public class MenuControl implements ActionListener {
 	
+	// Private data fields for the container and game client.
 	private JPanel container;
 	private GameClient client;
 	
+	// Constructor for the menu controller
 	public MenuControl(JPanel container, GameClient client) {
 		this.container = container;
 		this.client = client;
 	}
+
+	// Handle button clicks
+	public void actionPerformed(ActionEvent ae) {
+		// Get the name of the button clicked
+		String command = ae.getActionCommand();
+		
+	}
+	
 	
 }

@@ -1,5 +1,11 @@
 package client;
 
-public class MenuData {
+import java.io.Serializable;
+
+public class MenuData implements Serializable {
+	
+	public MenuData() {
+		
+	}
 
 }

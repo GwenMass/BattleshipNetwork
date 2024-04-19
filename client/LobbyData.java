@@ -1,5 +1,11 @@
 package client;
 
-public class LobbyData {
+import java.io.Serializable;
 
+public class LobbyData implements Serializable {
+
+	public LobbyData() {
+		
+	}
+	
 }
