@@ -9,7 +9,7 @@ public class LoginData implements Serializable {
 	private String username;
 	private String password;
 	
-	public LoginData(String username, String password) {
+	public LoginData(String username, String password){
 		setUsername(username);
 		setPassword(password);
 	}
@@ -30,4 +30,5 @@ public class LoginData implements Serializable {
 		this.password = password;
 	}
 	
+
 }

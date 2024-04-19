@@ -11,6 +11,8 @@ public class EndGameControl {
 	public EndGameControl(JPanel container, GameClient client){
 		this.container = container;
 		this.client = client;
+		
+		
 	}
 	
 }

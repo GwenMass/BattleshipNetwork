@@ -4,6 +4,7 @@ import javax.swing.JPanel;
 
 public class MenuControl {
 	// Private data fields for the container and game client.
+	
 	private JPanel container;
 	private GameClient client;
 	
@@ -11,4 +12,5 @@ public class MenuControl {
 		this.container = container;
 		this.client = client;
 	}
+	
 }
