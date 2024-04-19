@@ -1,4 +1,6 @@
 package client;
+import java.io.IOException;
+
 import javax.swing.*;
 public class GameGUI {
 private InitialPanel initialPanel;
@@ -9,8 +11,23 @@ private GameControl controller;
 	//constructor
 	 public GameGUI()
 	{
+		//Set up game client
+		GameClient client = new GameClient();
+		client.setHost("localhost");
+		client.setPort(8300);
+		try
+		{
+			client.openConnection();
+		}
+		catch (IOException e) {
+			e.printStackTrace();	
+		}
+		
+		
+		
 		
 	}
+	 
 	 public void main(String args[])
 	 {
 		//call & add initial panel
