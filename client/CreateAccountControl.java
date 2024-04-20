@@ -56,7 +56,7 @@ public class CreateAccountControl implements ActionListener {
 			}
 			catch (IOException e) {
 				displayError("Error connecting to the server.");
-			}
+			}			
 		}
 	}
 	

@@ -65,12 +65,14 @@ public class GameClient extends AbstractClient{
 		    Error error = (Error)arg0;
 		    
 		    // Display login errors using the login controller
-		    if(error.getType().equals("Login"))
+		    if(error.getType().equals("Login")) {
 		    	loginControl.displayError(error.getMessage());
+		    }
+		    	
 		    // Display account creation errors using the create account controller
-		    else if(error.getType().equals("CreateAccount"))
+		    else if(error.getType().equals("CreateAccount")) {
 		    	createAccountControl.displayError(error.getMessage());
-		    
+		    }
 		}
 	}
 	
