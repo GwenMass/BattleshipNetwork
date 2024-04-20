@@ -11,6 +11,7 @@ public class GameClient extends AbstractClient{
 	private LobbyControl lobbyControl;
 	private GameControl gameControl;
 	private EndGameControl endGameControl;
+	private String username;
 	
 	// Setters for the GUI controllers
 	public void setLoginControl(LoginControl loginControl) {
@@ -37,6 +38,14 @@ public class GameClient extends AbstractClient{
 		this.endGameControl = endGameControl;
 	}
 	
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+	
 	
 	// Constructor for initializing the client with default settings
 	public GameClient() {
@@ -54,9 +63,18 @@ public class GameClient extends AbstractClient{
 		    // If we successfuly logged in, tell the login controller
 		    if(message.equals("LoginSuccessful"))
 		    	loginControl.loginSuccess();
+		    
 		    // If we successfully created an account, tell the create account controller
 		    else if(message.equals("CreateAccountSuccessful"))
-		    	createAccountControl.createAccountSuccess();   
+		    	createAccountControl.createAccountSuccess();
+		    
+		    // If we joined a new or existing game, tell the Menu Controller
+		    else if(message.equals("NewGameStarted")) {
+		    	menuControl.newGameSuccess();
+			}
+			else if (message.equals("GameJoined")) {
+		    	menuControl.joinGameSuccess();
+		    }
 		}
 		
 		// If we received an Error, figure out where to display it.
@@ -72,6 +90,11 @@ public class GameClient extends AbstractClient{
 		    // Display account creation errors using the create account controller
 		    else if(error.getType().equals("CreateAccount")) {
 		    	createAccountControl.displayError(error.getMessage());
+		    }
+		    
+		    // Display game-joining errors using the Menu Controller
+		    else if(error.getType().equals("Menu")) {
+		    	menuControl.displayError(error.getMessage());
 		    }
 		}
 	}

@@ -62,9 +62,12 @@ public class CreateAccountControl implements ActionListener {
 	
 	// After an account is created, display the MenuPanel screen
 	public void createAccountSuccess() {
+		// Store username on client for later use in-game
 		CreateAccountPanel createAccountPanel = (CreateAccountPanel)container.getComponent(2);
-	    GameGUI gameGUI = (GameGUI)SwingUtilities.getWindowAncestor(createAccountPanel);
+		String username = createAccountPanel.getUsername();
+		client.setUsername(username);
 	    //clientGUI.setUser(new User(createAccountPanel.getUsername(), createAccountPanel.getPassword()));
+	    // Progress to MenuPanel
 	    CardLayout cardLayout = (CardLayout)container.getLayout();
 	    cardLayout.show(container, "4");
 	}

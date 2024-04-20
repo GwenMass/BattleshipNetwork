@@ -50,9 +50,13 @@ public class LoginControl implements ActionListener {
 		}
 	}
 	
-	// After the login is successful, set the User object and progress to the MenuPanel
+	// After the login is successful, set the username and progress to the MenuPanel
 	public void loginSuccess() {
+		// Store username for later display in-game
 		LoginPanel loginPanel = (LoginPanel)container.getComponent(1);
+		String username = loginPanel.getUsername();
+		client.setUsername(username);
+		// Progress to MenuPanel
 		CardLayout cardLayout = (CardLayout)container.getLayout();
 		cardLayout.show(container, "4");
 	}

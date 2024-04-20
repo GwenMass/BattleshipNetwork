@@ -22,6 +22,42 @@ public class MenuControl implements ActionListener {
 		// Get the name of the button clicked
 		String command = ae.getActionCommand();
 		
+		// The "Logout" button takes the user to the initial panel.
+		if (command.equals("Logout")) {
+			CardLayout cardLayout = (CardLayout)container.getLayout();
+			cardLayout.show(container, "1");
+		}
+		
+		// The "New Game" button requests the server to start a new game
+		else if (command.equals("New Game")) {
+			MenuData data = new MenuData(client.getUsername());
+			
+			// Submit MenuData to Server -- requests to start New Game or join current game
+			try {
+				client.sendToServer(data);
+				System.out.println("Client sent MenuData to server.");
+			}
+			catch (IOException e) {
+				displayError("Error connecting to the server.");
+			}
+		}
+		
+	}
+	
+	// If starting a new game or joining a game was successful, take the user to the LobbyPanel
+	public void newGameSuccess() {
+		CardLayout cardLayout = (CardLayout)container.getLayout();
+		cardLayout.show(container, "5");
+	}
+	
+	public void joinGameSuccess() {
+		CardLayout cardLayout = (CardLayout)container.getLayout();
+		cardLayout.show(container, "5");
+	}
+	
+	public void displayError(String error) {
+		MenuPanel menuPanel = (MenuPanel)container.getComponent(3);
+		menuPanel.setError(error);
 	}
 	
 	

@@ -7,21 +7,24 @@ import javax.swing.*;
 import ocsf.server.*;
 import client.CreateAccountData;
 import client.LoginData;
+import client.MenuData;
 import client.Error;
 
 public class GameServer extends AbstractServer {
 	
 	// Data fields for the GameServer
 	private Database database;
+	private Game game;
 	private JTextArea log;
 	private JLabel status;
-	private boolean running = false;
+	private boolean serverRunning = false;
 	
 	// Constructor for initializing the server with default settings
 	public GameServer() {
 		super(12345);
 		this.setTimeout(500);
 		database = new Database();
+		game = new Game();
 	}
 	
 	// Setter for database field
@@ -31,7 +34,7 @@ public class GameServer extends AbstractServer {
 	
 	// Getter that returns whether the server is currently running
 	public boolean isRunning() {
-		return running;
+		return serverRunning;
 	}
 	
 	// Setters for the data fields corresponding to the GUI elements
@@ -44,7 +47,7 @@ public class GameServer extends AbstractServer {
 	
 	// When the server starts, update the GUI
 	public void serverStarted() {
-		running = true;
+		serverRunning = true;
 		status.setText("Listening");
 		status.setForeground(Color.GREEN);
 		log.append("Server started\n");
@@ -59,7 +62,7 @@ public class GameServer extends AbstractServer {
 	
 	// When the server closes completely, update the gGUI
 	public void serverClosed() {
-		running = false;
+		serverRunning = false;
 		status.setText("Closed");
 		status.setForeground(Color.RED);
 		log.append("Server and all current clients are closed - press Listen to restart\n");
@@ -72,7 +75,7 @@ public class GameServer extends AbstractServer {
 	
 	// Method that handles listening exceptions by displaying exception information
 	public void listeningException(Throwable exception) {
-		running = false;
+		serverRunning = false;
 		status.setText("Exception occurred while listening");
 		status.setForeground(Color.RED);
 		log.append("Listening exception: " + exception.getMessage() + "\n");
@@ -102,7 +105,7 @@ public class GameServer extends AbstractServer {
 		    }
 		}
 		// If we received CreateAccountData, create a new account
-		if(arg0 instanceof CreateAccountData) {
+		else if (arg0 instanceof CreateAccountData) {
 			// Try to create the account
 			CreateAccountData data = (CreateAccountData)arg0;
 			Object result;
@@ -130,6 +133,38 @@ public class GameServer extends AbstractServer {
 			}
 			catch (IOException e) {
 		        return;
+			}
+		}
+		// If we received MenuData, see if a game is in progress or start a new game
+		else if (arg0 instanceof MenuData) {
+			System.out.println("Server received MenuData");
+			MenuData data = (MenuData)arg0;
+			Object result;
+			
+			// If no game currently in progress, start game and get Player One details from client
+			if(!game.isInProgress()) {
+				game.setInProgress(true);
+				game.setPlayerOneId(arg1.getId());
+				game.setPlayerOneUsername(data.getUsername());
+				result = "NewGameStarted";
+			}
+			// If game is in progress and Player Two is not yet filled, set client as Player Two
+			else if (game.getPlayerTwoId() == null){
+				game.setPlayerTwoId(arg1.getId());
+				game.setPlayerTwoUsername(data.getUsername());
+				result = "GameJoined";
+			}
+			else {
+				result = new Error("Game already in progress.", "Menu");
+			}
+			
+			// Send the result to the client
+			try {
+				arg1.sendToClient(result);
+				System.out.println("Sent MenuData result to client, result: " + result);
+			}
+			catch (IOException e) {
+				return;
 			}
 		}
 		

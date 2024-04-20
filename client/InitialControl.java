@@ -25,7 +25,7 @@ public class InitialControl implements ActionListener {
 	    if (command.equals("Login"))
 	    {
 	      LoginPanel loginPanel = (LoginPanel)container.getComponent(1);
-	      //loginPanel.setError("");
+	      loginPanel.setError("");
 	      CardLayout cardLayout = (CardLayout)container.getLayout();
 	      cardLayout.show(container, "2");
 	     
@@ -35,7 +35,7 @@ public class InitialControl implements ActionListener {
 	    else if (command.equals("Create"))
 	    {
 	      CreateAccountPanel createAccountPanel = (CreateAccountPanel)container.getComponent(2);
-	      //createAccountPanel.setError("");
+	      createAccountPanel.setError("");
 	      CardLayout cardLayout = (CardLayout)container.getLayout();
 	      cardLayout.show(container, "3");
 	    }
