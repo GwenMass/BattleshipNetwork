@@ -1,5 +1,7 @@
 package client;
 
+import java.awt.event.ActionEvent;
+
 import javax.swing.JPanel;
 
 public class LoginControl {
@@ -12,7 +14,10 @@ public class LoginControl {
 		this.client = client;
 	}
 	
-	
+	public void actionPerformed(ActionEvent e)
+	{
+		
+	}
 	//handlers for buttons pressed
 	public void loginAttempt(String username, String password)
 	{

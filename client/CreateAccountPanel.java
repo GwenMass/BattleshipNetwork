@@ -6,8 +6,9 @@ public class CreateAccountPanel extends JPanel {
 private JTextField usernameField;
 private JTextField passwordField;
 private JButton createAccount;
+
 private CreateAccountControl controller;
-private CreateAccountPanel() {
+CreateAccountPanel() {
 	//setup the layout of the UI
 	this.setLayout(new GridLayout(3,2));
 		
