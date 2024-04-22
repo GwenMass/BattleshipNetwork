@@ -89,13 +89,11 @@ public class GameServer extends AbstractServer {
 			// Check the username and password with the database
 			LoginData data = (LoginData)arg0;
 			Object result;
-		    String command = "SELECT username, password FROM user WHERE username = \'" + data.getUsername() + "\' AND password = \'" + data.getPassword() + "\';";
-			
+		    String command = "SELECT username, password FROM users WHERE username = \'" + data.getUsername() + "\' AND password = \'" + data.getPassword() + "\';";
 		    if (database.query(command).size() == 1)
 		    	result = "LoginSuccessful";
 		    else
 		        result = new Error("The username and password are incorrect.", "Login");
-		    
 		    // Send the result to the client
 		    try {
 		    	arg1.sendToClient(result);
@@ -109,11 +107,14 @@ public class GameServer extends AbstractServer {
 			// Try to create the account
 			CreateAccountData data = (CreateAccountData)arg0;
 			Object result;
-			String command = "SELECT username FROM user WHERE username = \'" + data.getUsername() + "\';";
-			
+			int id;
+			String command = "SELECT username FROM users WHERE username = \'" + data.getUsername() + "\';";
 			if (database.query(command).isEmpty()) {
 				try {
-		    		database.executeDML("INSERT INTO user VALUES (\'" + data.getUsername() + "\', \'" + data.getPassword() + "\');");
+					//Get id value for user
+					command = "Select * FROM users;";
+					id = database.query(command).size()+1;
+		    		database.executeDML("INSERT INTO users VALUES ('" + data.getUsername() + "','" + data.getPassword() + "','" + id + "');");
 		    		result = "CreateAccountSuccessful";
 				} 
 		    	catch (SQLException e) {
