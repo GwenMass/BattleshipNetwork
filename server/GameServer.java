@@ -10,7 +10,6 @@ import client.LoginData;
 import client.User;
 import client.MenuData;
 import client.LobbyData;
-import client.EndGameData;
 import client.Error;
 
 public class GameServer extends AbstractServer {
