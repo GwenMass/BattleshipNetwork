@@ -20,6 +20,39 @@ public class EndGameControl implements ActionListener {
 	public void actionPerformed(ActionEvent ae) {
 		// Get the name of the button clicked
 		String command = ae.getActionCommand();
+		
+		// The "Logout" button removes the user from the Game and returns to InitialPanel
+		if(command.equals("Logout")) {
+			// Inform server that you are leaving lobby (can just re-use LobbyData, already has functionality)
+			LobbyData data = new LobbyData();
+			data.setId(client.getId());
+			data.setLeavingLobby(true);
+			
+			// Submit EndGameData to server
+			try {
+				//For some reason, client connection was randomly closing
+				client.setPort(8300);
+				client.openConnection();
+				client.sendToServer(data);
+			}
+			catch (IOException e) {
+				System.out.println("Error logging out after game.");
+			}
+			
+			CardLayout cardLayout = (CardLayout)container.getLayout();
+			cardLayout.show(container, "1");
+		}
+		
+		// The "Retry" button allows the user to replay the game. Send back to Lobby Panel
+		else if(command.equals("Retry")) {
+			CardLayout cardLayout = (CardLayout)container.getLayout();
+			cardLayout.show(container, "5");
+		}
+	}
+	
+	public void updateWinnerLabel(String message) {
+		EndGamePanel endGamePanel = (EndGamePanel)container.getComponent(6);
+		endGamePanel.setWinnerLabel(message);
 	}
 	
 }

@@ -52,6 +52,9 @@ public class CreateAccountControl implements ActionListener {
 			// Submit the new account information the server
 			CreateAccountData data = new CreateAccountData(username, password);
 			try {
+				//For some reason, client connection was randomly closing
+				client.setPort(8300);
+				client.openConnection();
 				client.sendToServer(data);
 			}
 			catch (IOException e) {

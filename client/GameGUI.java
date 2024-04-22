@@ -72,7 +72,7 @@ public class GameGUI extends JFrame {
 		this.add(container);
 		
 		// Show the JFrame
-		this.setSize(550, 550);
+		this.setSize(800, 550);
 		this.setVisible(true);
 	}
 	

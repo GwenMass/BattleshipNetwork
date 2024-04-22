@@ -1,16 +1,15 @@
 package client;
 
 public class Grid {
-int height;
-int width;
-int cells[][];
-boolean isOceanGrid;
-	private Grid(int w, int h)
+	private int gridSize;
+	private int cells[][];
+	private boolean isOceanGrid;
+	
+	public Grid(int gridSize)
 	{
-		this.width = w;
-		this.height = h;
+		this.gridSize = gridSize;
 		//create grid CHECK ORIENTATION
-		this.cells = new int[w][h];
+		this.cells = new int[gridSize][gridSize];
 
 	}
 	void getCells()

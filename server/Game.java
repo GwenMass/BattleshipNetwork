@@ -6,28 +6,30 @@ import client.Ship;
 public class Game {
 	
 	// Private data fields
-	private Long playerOneId;
-	private Long playerTwoId;
+	private Integer playerOneId;
+	private Integer playerTwoId;
 	private String playerOneUsername;
 	private String playerTwoUsername;
 	private Grid playerOneGrid;
 	private Grid playerTwoGrid;
+	private boolean playerOneReady;
+	private boolean playerTwoReady;
 	private boolean inProgress = false;
 	
 	// Setters and getters for private data fields
-	public void setPlayerOneId(Long playerOneId) {
+	public void setPlayerOneId(Integer playerOneId) {
 		this.playerOneId = playerOneId;
 	}
 	
-	public Long getPlayerOneId() {
+	public Integer getPlayerOneId() {
 		return playerOneId;
 	}
 	
-	public void setPlayerTwoId(Long playerTwoId) {
+	public void setPlayerTwoId(Integer playerTwoId) {
 		this.playerTwoId = playerTwoId;
 	}
 	
-	public Long getPlayerTwoId() {
+	public Integer getPlayerTwoId() {
 		return playerTwoId;
 	}
 	
@@ -70,10 +72,64 @@ public class Game {
 	public boolean isInProgress() {
 		return inProgress;
 	}
+	
+	public void setPlayerReady(Integer playerId, boolean ready) {
+		if(this.playerOneId.equals(playerId))
+			setPlayerOneReady(ready);
+		else if(this.playerTwoId.equals(playerId))
+			setPlayerTwoReady(ready);
+		else
+			System.out.println("Player ID " + playerId + " is not in session.");
+	}
+	
+	public void setPlayerOneReady(boolean playerOneReady) {
+		this.playerOneReady = playerOneReady;
+	}
+	
+	public boolean getPlayerOneReady() {
+		return playerOneReady;
+	}
+	
+	public void setPlayerTwoReady(boolean playerTwoReady) {
+		this.playerTwoReady = playerTwoReady;
+	}
+	
+	public boolean getPlayerTwoReady() {
+		return playerTwoReady;
+	}
+	
+	public void removePlayer(Integer playerId) {
+		if(this.playerTwoId.equals(playerId)) {
+			setPlayerTwoId(null);
+			setPlayerTwoUsername(null);
+			setPlayerTwoReady(false);
+		}
+		else if(this.playerOneId.equals(playerId)) {
+			setPlayerOneId(getPlayerTwoId());
+			setPlayerOneUsername(getPlayerTwoUsername());
+			setPlayerOneReady(getPlayerTwoReady());
+			setPlayerTwoId(null);
+			setPlayerTwoUsername(null);
+			setPlayerTwoReady(false);
+			
+			// If both players left, game not in progress
+			if(getPlayerOneId() == null)
+				setInProgress(false);
+		}
+		else
+			System.out.println("PlayerId does not match players in session.");
+	}
 
 	public Game() {
-		//playerOneGrid = new Grid();
-		//playerTwoGrid = new Grid();
+		// Set fields to default variables when no players connected
+		playerOneId = null;
+		playerTwoId = null;
+		playerOneUsername = null;
+		playerTwoUsername = null;
+		playerOneGrid = new Grid(10);
+		playerTwoGrid = new Grid(10);
+		playerOneReady = false;
+		playerTwoReady = false;
 	}
 	
 }

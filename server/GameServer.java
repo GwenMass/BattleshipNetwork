@@ -7,7 +7,10 @@ import javax.swing.*;
 import ocsf.server.*;
 import client.CreateAccountData;
 import client.LoginData;
+import client.User;
 import client.MenuData;
+import client.LobbyData;
+import client.EndGameData;
 import client.Error;
 
 public class GameServer extends AbstractServer {
@@ -89,10 +92,10 @@ public class GameServer extends AbstractServer {
 			// Check the username and password with the database
 			LoginData data = (LoginData)arg0;
 			Object result;
-		    String command = "SELECT username, password FROM user WHERE username = \'" + data.getUsername() + "\' AND password = \'" + data.getPassword() + "\';";
+			String command = "SELECT username, password FROM users WHERE username = \'" + data.getUsername() + "\' AND password = \'" + data.getPassword() + "\';";
 			
 		    if (database.query(command).size() == 1)
-		    	result = "LoginSuccessful";
+		    	result = new User(data.getUsername(), data.getPassword(), database.getId(data.getUsername()));
 		    else
 		        result = new Error("The username and password are incorrect.", "Login");
 		    
@@ -109,13 +112,14 @@ public class GameServer extends AbstractServer {
 			// Try to create the account
 			CreateAccountData data = (CreateAccountData)arg0;
 			Object result;
-			String command = "SELECT username FROM user WHERE username = \'" + data.getUsername() + "\';";
+			String command = "SELECT username FROM users WHERE username = \'" + data.getUsername() + "\';";
 			
 			if (database.query(command).isEmpty()) {
 				try {
-		    		database.executeDML("INSERT INTO user VALUES (\'" + data.getUsername() + "\', \'" + data.getPassword() + "\');");
-		    		result = "CreateAccountSuccessful";
-				} 
+		    		//database.executeDML("INSERT INTO users VALUES (\'" + data.getUsername() + "\', \'" + data.getPassword() + "\');");
+		    		database.executeDML("INSERT INTO users VALUES (\'" + data.getUsername() + "\', \'" + data.getPassword() + "\'," + database.getNextID() + ");");
+		    		result = new User(data.getUsername(), data.getPassword(), database.getId(data.getUsername()));
+				}
 		    	catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -125,7 +129,6 @@ public class GameServer extends AbstractServer {
 			else {
 				result = new Error("The username is already in use.", "CreateAccount");
 			}
-			
 			
 			 // Send the result to the client.
 			try {
@@ -137,35 +140,69 @@ public class GameServer extends AbstractServer {
 		}
 		// If we received MenuData, see if a game is in progress or start a new game
 		else if (arg0 instanceof MenuData) {
-			System.out.println("Server received MenuData");
 			MenuData data = (MenuData)arg0;
 			Object result;
+			boolean broadcast = true;
 			
 			// If no game currently in progress, start game and get Player One details from client
 			if(!game.isInProgress()) {
 				game.setInProgress(true);
-				game.setPlayerOneId(arg1.getId());
+				//game.setPlayerOneId(arg1.getId());
+				game.setPlayerOneId(database.getId(data.getUsername()));
 				game.setPlayerOneUsername(data.getUsername());
-				result = "NewGameStarted";
+				result = "GameJoined";
 			}
 			// If game is in progress and Player Two is not yet filled, set client as Player Two
 			else if (game.getPlayerTwoId() == null){
-				game.setPlayerTwoId(arg1.getId());
+				//game.setPlayerTwoId(arg1.getId());
+				game.setPlayerTwoId(database.getId(data.getUsername()));
 				game.setPlayerTwoUsername(data.getUsername());
 				result = "GameJoined";
 			}
 			else {
 				result = new Error("Game already in progress.", "Menu");
+				broadcast = false;
 			}
 			
 			// Send the result to the client
 			try {
 				arg1.sendToClient(result);
-				System.out.println("Sent MenuData result to client, result: " + result);
+				
+				// Broadcast to players that client has joined game
+				if(broadcast) {
+					LobbyData playerJoined = new LobbyData();
+					playerJoined.setPlayerOneUsername(game.getPlayerOneUsername());
+					playerJoined.setPlayerTwoUsername(game.getPlayerTwoUsername());
+					playerJoined.setPlayerOneReady(game.getPlayerOneReady());
+					playerJoined.setPlayerTwoReady(game.getPlayerTwoReady());
+					sendToAllClients(playerJoined);
+				}
 			}
 			catch (IOException e) {
 				return;
 			}
+		}
+		// If we received LobbyData, see if user is leaving game or readying up
+		else if (arg0 instanceof LobbyData) {
+			LobbyData data = (LobbyData)arg0;
+			Object result;
+			
+			// If user is leaving lobby, remove them from the Game
+			if(data.getLeavingLobby()) {
+				game.removePlayer(data.getId());
+			}
+			// User is readying up
+			else if(data.getReadyUp()) {
+				game.setPlayerReady(data.getId(), true);		
+			}
+			
+			// Broadcast to all clients the result of player either leaving lobby or reading
+			LobbyData playersUpdate = new LobbyData();
+			playersUpdate.setPlayerOneReady(game.getPlayerOneReady());
+			playersUpdate.setPlayerTwoReady(game.getPlayerTwoReady());
+			playersUpdate.setPlayerOneUsername(game.getPlayerOneUsername());
+			playersUpdate.setPlayerTwoUsername(game.getPlayerTwoUsername());
+			sendToAllClients(playersUpdate);
 		}
 		
 	}

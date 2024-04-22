@@ -34,22 +34,20 @@ public class MenuControl implements ActionListener {
 			
 			// Submit MenuData to Server -- requests to start New Game or join current game
 			try {
+				//For some reason, client connection was randomly closing
+				client.setPort(8300);
+				client.openConnection();
 				client.sendToServer(data);
-				System.out.println("Client sent MenuData to server.");
 			}
 			catch (IOException e) {
 				displayError("Error connecting to the server.");
+				e.printStackTrace();
 			}
 		}
 		
 	}
 	
 	// If starting a new game or joining a game was successful, take the user to the LobbyPanel
-	public void newGameSuccess() {
-		CardLayout cardLayout = (CardLayout)container.getLayout();
-		cardLayout.show(container, "5");
-	}
-	
 	public void joinGameSuccess() {
 		CardLayout cardLayout = (CardLayout)container.getLayout();
 		cardLayout.show(container, "5");

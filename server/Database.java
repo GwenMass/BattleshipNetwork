@@ -80,6 +80,15 @@ public class Database {
 		return true;
 	}
 	
+	public int getId(String username) {
+		String query = "SELECT id FROM users WHERE username = \'" + username + "\';";
+		ArrayList<String> queryResult = query(query);
+		if(queryResult.isEmpty())
+			return -1;
+		return Integer.parseInt(queryResult.get(0).replace(",", ""));
+		
+	}
+	
 	
 	public int getNextID() {
 		String query = "SELECT MAX(id) FROM users;";
