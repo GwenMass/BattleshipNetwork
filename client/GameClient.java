@@ -84,18 +84,31 @@ public class GameClient extends AbstractClient{
 			
 			// If we are allowed to lock ships, tell the Game Controller
 			else if(message.equals("LockShipsAllowed")) {
-				gameControl.lockShips();
+				gameControl.setLockShips(true);
 			}
 		    
 		    // If we are allowed to unlock ships, tell the Game Controller
 			else if(message.equals("UnlockShipsAllowed")) {
-				gameControl.unlockShips();
+				gameControl.setLockShips(false);
 			}
 		    
 		    // If AttackPhase of game has begun, tell the Game Controller
 			else if(message.equals("AttackPhaseStarted")) {
 				gameControl.startAttackPhase();
 			}
+		    
+		    // If it is our turn to attack, tell the Game Controller
+			else if(message.startsWith("Turn")) {
+				if(message.equals("Turn" + id)) {
+					gameControl.setMyTurn(true);
+					gameControl.updateInstruction("It's your turn! Choose a cell of your opponent's to attack!");
+				}
+				else {
+					gameControl.setMyTurn(false);
+					gameControl.updateInstruction("It's your opponent's turn.");
+				}
+			}
+			
 		}
 		
 		// If we received User, we successfully logged in or create account. Tell login controller by default
@@ -117,7 +130,7 @@ public class GameClient extends AbstractClient{
 		    if(error.getType().equals("Login")) {
 		    	loginControl.displayError(error.getMessage());
 		    }
-		    	
+		    
 		    // Display account creation errors using the create account controller
 		    else if(error.getType().equals("CreateAccount")) {
 		    	createAccountControl.displayError(error.getMessage());
@@ -126,6 +139,11 @@ public class GameClient extends AbstractClient{
 		    // Display game-joining errors using the Menu Controller
 		    else if(error.getType().equals("Menu")) {
 		    	menuControl.displayError(error.getMessage());
+		    }
+		    
+		    // Display Game errors using the Game controller
+		    else if(error.getType().equals("Game")) {
+		    	gameControl.displayError(error.getMessage());
 		    }
 		}
 		
@@ -165,6 +183,26 @@ public class GameClient extends AbstractClient{
 			else {
 				lobbyControl.updateOpponentLabel("Error determining opponent username");
 			}
+		}
+		
+		else if (arg0 instanceof GameData) {
+			GameData data = (GameData)arg0;
+			
+			// IF we got coordinates back, we are being told if a  shot hit or missed
+			if(data.getAttackingX() != null && data.getAttackingY() != null) {
+				// If data stores our ID, the information is about our shot
+				if(data.getId() == id) {
+					// Tell the game controller if our shot hit or missed
+					gameControl.myShotResult(data.getAttackingX(), data.getAttackingY(), data.getShotHit());
+					System.out.println(data.getShotHit() + " my shot at " + data.getAttackingX() + ", " + data.getAttackingY());
+				}
+				else {
+					// Tell the game controller if the opponent's shot hit or missed
+					gameControl.oppShotResult(data.getAttackingX(), data.getAttackingY(), data.getShotHit());
+					System.out.println(data.getShotHit() + " opp shot at " + data.getAttackingX() + ", " + data.getAttackingY());
+				}
+			}
+		    
 		}
 	}
 	

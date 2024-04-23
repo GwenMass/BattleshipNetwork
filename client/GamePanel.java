@@ -19,6 +19,7 @@ public class GamePanel extends JPanel {
 	private int selectedShipIndex = -1;
 	private boolean shipsLocked = false;
 	private boolean attackPhase = false;
+	private boolean myTurn = false;
 	
 	public void setInstructionLabel(String message) {
 		instructionLabel.setText(message);
@@ -50,6 +51,18 @@ public class GamePanel extends JPanel {
 	
 	public JButton[][] getOceanGridButtons(){
 		return oceanGridButtons;
+	}
+	
+	public void setOceanGridButtons(JButton[][] oceanGridButtons) {
+		this.oceanGridButtons = oceanGridButtons;
+	}
+	
+	public JButton[][] getTargetGridButtons(){
+		return targetGridButtons;
+	}
+	
+	public void setTargetGridButtons(JButton[][] targetGridButtons) {
+		this.targetGridButtons = targetGridButtons;
 	}
 	
 	public Ship[] getUserShips() {
@@ -90,7 +103,7 @@ public class GamePanel extends JPanel {
 		String cells[][] = oceanGrid.getCells();
 		if(ship.isHorizontal()) {
 			for(int i = 0; i < ship.getSize(); i++) {
-				if(!cells[x][y].equals("") && !cells[x][y].equals("Ship" + shipIndex)) {
+				if(!cells[x][y].equals("Empty") && !cells[x][y].equals("Ship" + shipIndex)) {
 					occupied = true;
 					break;
 				}
@@ -99,7 +112,7 @@ public class GamePanel extends JPanel {
 		}
 		else {
 			for(int i = 0; i < ship.getSize(); i++) {
-				if(!cells[x][y].equals("") && !cells[x][y].equals("Ship" + shipIndex)) {
+				if(!cells[x][y].equals("Empty") && !cells[x][y].equals("Ship" + shipIndex)) {
 					occupied = true;
 					break;
 				}
@@ -161,6 +174,14 @@ public class GamePanel extends JPanel {
 	
 	public boolean getAttackPhase() {
 		return attackPhase;
+	}
+	
+	public void setMyTurn(boolean myTurn) {
+		this.myTurn = myTurn;
+	}
+	
+	public boolean getMyTurn() {
+		return myTurn;
 	}
 
 	// Constructor for the GamePanel

@@ -10,11 +10,35 @@ public class GameData implements Serializable {
 	private String playerTwoUsername;
 	private boolean playerOneReady;
 	private boolean playerTwoReady;
-	private Grid playerOneOcean;
+	private Grid oceanGrid;
 	private Grid playerTwoOcean;
 	private int playerTurn;
 	private boolean shipsLocked;
 	private boolean unlockingShips;
+	private Integer attackingX;
+	private Integer attackingY;
+	private boolean shotHit;
+	
+	public void setShotHit(boolean shotHit) {
+		this.shotHit = shotHit;
+	}
+	
+	public boolean getShotHit() {
+		return shotHit;
+	}
+	
+	public void setAttackingCoords(Integer x, Integer y) {
+		attackingX = x;
+		attackingY = y;
+	}
+	
+	public Integer getAttackingX() {
+		return attackingX;
+	}
+	
+	public Integer getAttackingY() {
+		return attackingY;
+	}
 	
 	public void setUnlockingShips(boolean unlockingShips) {
 		this.unlockingShips = unlockingShips;
@@ -32,13 +56,13 @@ public class GameData implements Serializable {
 	{
 		return this.playerTurn;
 	}
-	public void setPlayerOneOcean(Grid ocean)
+	public void setOceanGrid(Grid ocean)
 	{
-		this.playerOneOcean = ocean;
+		this.oceanGrid = ocean;
 	}
-	public Grid getPlayerOneOcean()
+	public Grid getOceanGrid()
 	{
-		return this.playerOneOcean;
+		return this.oceanGrid;
 	}
 	
 	public void setPlayerTwoOcean(Grid ocean)
@@ -121,11 +145,13 @@ public class GameData implements Serializable {
 		setPlayerTwoUsername(null);
 		setPlayerOneReady(false);
 		setPlayerTwoReady(false);
-		setPlayerOneOcean(null);
+		setOceanGrid(null);
 		setPlayerTwoOcean(null);
 		setPlayerTurn(0);
 		setShipsLocked(false);
 		setUnlockingShips(false);
+		setAttackingCoords(null, null);
+		setShotHit(false);
 	}
 
 }

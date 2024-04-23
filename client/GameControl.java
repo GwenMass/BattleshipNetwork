@@ -83,9 +83,37 @@ public class GameControl implements ActionListener {
 			}
 		}
 		
-		// User clicked a cell on their targetGrid during attack phase
-		else if (command.equals("targetCell") && gamePanel.getAttackPhase()) {
+		// User clicked a cell on their targetGrid during attack phase, during their turn
+		else if (command.equals("targetCell") && gamePanel.getAttackPhase() && gamePanel.getMyTurn()) {
+			// Determine coordinates of cell
+			JButton[][] targetGridButtons = gamePanel.getTargetGridButtons();
+			JButton clickedButton = (JButton)ae.getSource();
+			int x = 0;
+			int y = 0;
 			
+			for (int i = 0; i < gamePanel.getGridSize(); i++) {
+				for(int j = 0; j < gamePanel.getGridSize(); j++) {
+					if(clickedButton == targetGridButtons[i][j]) {
+						x = i;
+						y = j;
+					}
+				}
+			}
+			
+			// Inform server of the coordinates they are attacking (and validate oceanGrid)
+			GameData data = new GameData();
+			data.setId(client.getId());
+			data.setAttackingCoords(x, y);
+			data.setOceanGrid(gamePanel.getOceanGrid());
+			
+			try {
+				client.setPort(8300);
+				client.openConnection();
+				client.sendToServer(data);;
+			}
+			catch(IOException e) {
+				displayError("Error attacking opponent's board.");
+			}
 		}
 		
 		// User clicked "Rotate Ship" when ships aren't locked
@@ -137,7 +165,7 @@ public class GameControl implements ActionListener {
 					GameData data = new GameData();
 					data.setId(client.getId());
 					data.setShipsLocked(shipsPlaced);
-					data.setPlayerOneOcean(gamePanel.getOceanGrid());
+					data.setOceanGrid(gamePanel.getOceanGrid());
 					
 					try {
 						client.setPort(8300);
@@ -165,14 +193,55 @@ public class GameControl implements ActionListener {
 		gamePanel.setAttackPhase(true);
 	}
 	
-	public void lockShips() {
+	public void setLockShips(boolean lockShips) {
 		GamePanel gamePanel = (GamePanel)container.getComponent(5);
-		gamePanel.setShipsLocked(true);
+		gamePanel.setShipsLocked(lockShips);
 	}
 	
-	public void unlockShips() {
+	public void setMyTurn(boolean myTurn) {
 		GamePanel gamePanel = (GamePanel)container.getComponent(5);
-		gamePanel.setShipsLocked(false);
+		gamePanel.setMyTurn(myTurn);
+	}
+	
+	public void myShotResult(int attackingX, int attackingY, boolean hit) {
+		GamePanel gamePanel = (GamePanel)container.getComponent(5);
+		Grid targetGrid = gamePanel.getTargetGrid();
+		JButton[][] targetGridButtons = gamePanel.getTargetGridButtons();
+
+		if(hit) {
+			targetGrid.registerHit(attackingX, attackingY);
+			targetGridButtons[attackingX][attackingY].setBackground(Color.RED);
+		}
+		else {
+			targetGrid.registerMiss(attackingX, attackingY);
+			targetGridButtons[attackingX][attackingY].setBackground(Color.YELLOW);
+		}
+		
+		gamePanel.setTargetGrid(targetGrid);
+		gamePanel.setTargetGridButtons(targetGridButtons);
+	}
+	
+	public void oppShotResult(int attackingX, int attackingY, boolean hit) {
+		GamePanel gamePanel = (GamePanel)container.getComponent(5);
+		Grid oceanGrid = gamePanel.getOceanGrid();
+		JButton[][] oceanGridButtons = gamePanel.getOceanGridButtons();
+		
+		if(hit) {
+			oceanGrid.registerHit(attackingX, attackingY);
+			oceanGridButtons[attackingX][attackingY].setBackground(Color.RED);
+		}
+		else {
+			oceanGrid.registerMiss(attackingX, attackingY);
+			oceanGridButtons[attackingX][attackingY].setBackground(Color.YELLOW);
+		}
+		
+		gamePanel.setOceanGrid(oceanGrid);
+		gamePanel.setOceanGridButtons(oceanGridButtons);
+	}
+	
+	public void updateInstruction(String message) {
+		GamePanel gamePanel = (GamePanel)container.getComponent(5);
+		gamePanel.setInstructionLabel(message);
 	}
 		
 	public void displayError(String message) {
