@@ -10,6 +10,7 @@ import client.LoginData;
 import client.User;
 import client.MenuData;
 import client.LobbyData;
+import client.GameData;
 import client.Error;
 
 public class GameServer extends AbstractServer {
@@ -192,7 +193,7 @@ public class GameServer extends AbstractServer {
 			}
 			// User is readying up
 			else if(data.getReadyUp()) {
-				game.setPlayerReady(data.getId(), true);		
+				game.setPlayerReady(data.getId(), data.getReadyUp());		
 			}
 			
 			// Broadcast to all clients the result of player either leaving lobby or reading
@@ -202,6 +203,49 @@ public class GameServer extends AbstractServer {
 			playersUpdate.setPlayerOneUsername(game.getPlayerOneUsername());
 			playersUpdate.setPlayerTwoUsername(game.getPlayerTwoUsername());
 			sendToAllClients(playersUpdate);
+		}
+		
+		// We received GameData
+		else if(arg0 instanceof GameData) {
+			GameData data = (GameData)arg0;
+			Object result;
+			
+			// User is locking their ships
+			if(data.getShipsLocked()) {
+				// Store their grid and the fact that they are locking
+				game.setPlayerShipsLocked(data.getId(), data.getShipsLocked());
+				game.setPlayerOneGrid(data.getPlayerOneOcean());
+				
+				result = "LockShipsAllowed";
+				try {
+					arg1.sendToClient(result);
+				}
+				catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+				// If both players have locked their ships, start attackPhase and broadcast to both clients
+				if(game.getPlayerOneShipsLocked() && game.getPlayerTwoShipsLocked()) {
+					game.setAttackPhase(true);
+					
+					result = "AttackPhaseStarted";
+					sendToAllClients(result);
+				}
+			}
+			// User is unlocking their ships
+			else if (data.getUnlockingShips()) {
+				// If not in attack phase, permit unlock
+				if(!game.getAttackPhase())
+					game.setPlayerShipsLocked(data.getId(), false);
+				
+				result = "UnlockShipsAllowed";
+				try {
+					arg1.sendToClient(result);
+				} 
+				catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		
 	}

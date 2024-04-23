@@ -81,6 +81,21 @@ public class GameClient extends AbstractClient{
 			else if (message.equals("GameJoined")) {
 		    	menuControl.joinGameSuccess();
 		    }
+			
+			// If we are allowed to lock ships, tell the Game Controller
+			else if(message.equals("LockShipsAllowed")) {
+				gameControl.lockShips();
+			}
+		    
+		    // If we are allowed to unlock ships, tell the Game Controller
+			else if(message.equals("UnlockShipsAllowed")) {
+				gameControl.unlockShips();
+			}
+		    
+		    // If AttackPhase of game has begun, tell the Game Controller
+			else if(message.equals("AttackPhaseStarted")) {
+				gameControl.startAttackPhase();
+			}
 		}
 		
 		// If we received User, we successfully logged in or create account. Tell login controller by default

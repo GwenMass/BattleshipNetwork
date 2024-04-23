@@ -13,6 +13,16 @@ public class GameData implements Serializable {
 	private Grid playerOneOcean;
 	private Grid playerTwoOcean;
 	private int playerTurn;
+	private boolean shipsLocked;
+	private boolean unlockingShips;
+	
+	public void setUnlockingShips(boolean unlockingShips) {
+		this.unlockingShips = unlockingShips;
+	}
+	
+	public boolean getUnlockingShips() {
+		return unlockingShips;
+	}
 	
 	public void setPlayerTurn(int number)
 	{
@@ -95,20 +105,27 @@ public class GameData implements Serializable {
 	public boolean getPlayerTwoReady() {
 		return playerTwoReady;
 	}
+	public void setShipsLocked(boolean shipsLocked) {
+		this.shipsLocked = shipsLocked;
+	}
+	public boolean getShipsLocked() {
+		return shipsLocked;
+	}
 	
 	public GameData() {
 		// Set fields to default values; assume fields will be set with setters
-				setId(null);
-				setReadyUp(false);
-				setLeavingLobby(false);
-				setPlayerOneUsername(null);
-				setPlayerTwoUsername(null);
-				setPlayerOneReady(false);
-				setPlayerTwoReady(false);
-				setPlayerOneOcean(null);
-				setPlayerTwoOcean(null);
-				setPlayerTurn(0);
-				
+		setId(null);
+		setReadyUp(false);
+		setLeavingLobby(false);
+		setPlayerOneUsername(null);
+		setPlayerTwoUsername(null);
+		setPlayerOneReady(false);
+		setPlayerTwoReady(false);
+		setPlayerOneOcean(null);
+		setPlayerTwoOcean(null);
+		setPlayerTurn(0);
+		setShipsLocked(false);
+		setUnlockingShips(false);
 	}
 
 }

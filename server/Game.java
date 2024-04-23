@@ -15,6 +15,9 @@ public class Game {
 	private boolean playerOneReady;
 	private boolean playerTwoReady;
 	private boolean inProgress = false;
+	private boolean playerOneShipsLocked;
+	private boolean playerTwoShipsLocked;
+	private boolean attackPhase;
 	
 	// Setters and getters for private data fields
 	public void setPlayerOneId(Integer playerOneId) {
@@ -98,6 +101,39 @@ public class Game {
 		return playerTwoReady;
 	}
 	
+	public void setPlayerOneShipsLocked(boolean playerOneShipsLocked) {
+		this.playerOneShipsLocked = playerOneShipsLocked;
+	}
+	
+	public boolean getPlayerOneShipsLocked() {
+		return playerOneShipsLocked;
+	}
+	
+	public void setPlayerTwoShipsLocked(boolean playerTwoShipsLocked) {
+		this.playerTwoShipsLocked = playerTwoShipsLocked;
+	}
+	
+	public boolean getPlayerTwoShipsLocked() {
+		return playerTwoShipsLocked;
+	}
+	
+	public void setPlayerShipsLocked(Integer playerId, boolean shipsLocked) {
+		if(this.playerOneId.equals(playerId))
+			setPlayerOneShipsLocked(shipsLocked);
+		else if(this.playerTwoId.equals(playerId))
+			setPlayerTwoShipsLocked(shipsLocked);
+		else
+			System.out.println("Player ID " + playerId + " is not in session.");
+	}
+	
+	public void setAttackPhase(boolean attackPhase) {
+		this.attackPhase = attackPhase;
+	}
+	
+	public boolean getAttackPhase() {
+		return attackPhase;
+	}
+	
 	public void removePlayer(Integer playerId) {
 		if(this.playerTwoId.equals(playerId)) {
 			setPlayerTwoId(null);
@@ -130,6 +166,9 @@ public class Game {
 		playerTwoGrid = new Grid(10);
 		playerOneReady = false;
 		playerTwoReady = false;
+		playerOneShipsLocked = false;
+		playerTwoShipsLocked = false;
+		attackPhase = false;
 	}
 	
 }

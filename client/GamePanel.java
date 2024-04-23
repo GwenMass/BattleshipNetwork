@@ -2,22 +2,165 @@ package client;
 
 import java.awt.*;
 import javax.swing.*;
-import java.awt.event.*;
 
 public class GamePanel extends JPanel {
 	
-	final int gridSize = 10;
-	private final Ship[] userShips = {new Ship(5),new Ship(4),new Ship(3),new Ship(3),new Ship(2)};
-	Grid oceanGrid;
-	Grid targetGrid;
-	JButton[][] oceanGridButtons;
-	private JButton[][] targetGridButtons;
 	private JLabel instructionLabel;
-	Ship selectedShip = null;
+	private JLabel errorLabel;
+	private final int gridSize = 10;
+	private Grid oceanGrid;
+	private Grid targetGrid;
+	private JButton[][] oceanGridButtons;
+	private JButton[][] targetGridButtons;
+	private JButton lockShipsButton;
+	private Ship[] userShips = {new Ship(5),new Ship(4),new Ship(3),new Ship(3),new Ship(2)};
+	private JButton[] shipButtons;
+	private Ship selectedShip;
+	private int selectedShipIndex = -1;
+	private boolean shipsLocked = false;
+	private boolean attackPhase = false;
 	
-	public void setInstructionLabel(String message)
-	{
+	public void setInstructionLabel(String message) {
 		instructionLabel.setText(message);
+	}
+	
+	public void setErrorLabel(String message) {
+		errorLabel.setText(message);
+	}
+	
+	public int getGridSize() {
+		return gridSize;
+	}
+	
+	public void setOceanGrid(Grid oceanGrid) {
+		this.oceanGrid = oceanGrid;
+	}
+	
+	public Grid getOceanGrid() {
+		return oceanGrid;
+	}
+	
+	public void setTargetGrid(Grid targetGrid) {
+		this.targetGrid = targetGrid;
+	}
+	
+	public Grid getTargetGrid() {
+		return targetGrid;
+	}
+	
+	public JButton[][] getOceanGridButtons(){
+		return oceanGridButtons;
+	}
+	
+	public Ship[] getUserShips() {
+		return userShips;
+	}
+	
+	public void setSelectedShip(int i) {
+		// Remove border on previously selected ship
+		if(selectedShipIndex != -1) {
+			shipButtons[selectedShipIndex].setBorder(null);
+		}
+		// If new selectedShip is same as previous selectedShip (i.e., same ship clicked twice), unselect the ship
+		if(selectedShipIndex == i) {
+			selectedShipIndex = -1;
+			selectedShip = null;
+			return;
+		}
+		// Set new selectedShip and give it a border
+		selectedShipIndex = i;
+		selectedShip = userShips[i];
+		shipButtons[i].setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
+	}
+	
+	public Ship getSelectedShip() {
+		return selectedShip;
+	}
+	
+	public int getSelectedShipIndex() {
+		return selectedShipIndex;
+	}
+	
+	public void placeShip(int x, int y, Ship ship, int shipIndex) {
+		boolean occupied = false;
+		int temp_x = x;
+		int temp_y = y;
+		
+		// See if any space is already occupied by another ship
+		String cells[][] = oceanGrid.getCells();
+		if(ship.isHorizontal()) {
+			for(int i = 0; i < ship.getSize(); i++) {
+				if(!cells[x][y].equals("") && !cells[x][y].equals("Ship" + shipIndex)) {
+					occupied = true;
+					break;
+				}
+				x++;
+			}
+		}
+		else {
+			for(int i = 0; i < ship.getSize(); i++) {
+				if(!cells[x][y].equals("") && !cells[x][y].equals("Ship" + shipIndex)) {
+					occupied = true;
+					break;
+				}
+				y++;
+			}
+		}
+		
+		// If space is not occupied, place ship
+		if(!occupied) {
+			x = temp_x;
+			y = temp_y;
+			oceanGrid.placeShip(x,  y, ship, shipIndex);
+			ship.setPlaced(true);
+					
+			if(ship.isHorizontal()) {
+				for(int i = 0; i < ship.getSize(); i++) {
+					oceanGridButtons[x][y].setBackground(ship.getColor());
+					x++;
+				}
+			}
+			else {
+				for(int i = 0; i < ship.getSize(); i++) {
+					oceanGridButtons[x][y].setBackground(ship.getColor());
+					y++;
+				}
+			}
+		}
+	}
+	
+	public void removeShip(int shipIndex) {
+		String[][] cells = oceanGrid.getCells();
+		for(int x = 0; x < cells.length; x++) {
+			for (int y = 0; y < cells.length; y++) {
+				if(cells[x][y].equals("Ship" + shipIndex)) {
+					oceanGridButtons[x][y].setBackground(null);
+				}
+			}
+		}
+		oceanGrid.removeShip(shipIndex);
+	}
+	
+	public void setShipsLocked(boolean shipsLocked) {
+		this.shipsLocked = shipsLocked;
+		
+		if(shipsLocked) {
+			lockShipsButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
+		}
+		else
+			lockShipsButton.setBorder(null);
+	}
+	
+	public boolean getShipsLocked() {
+		return shipsLocked;
+	}
+	
+	public void setAttackPhase(boolean attackPhase) {
+		this.attackPhase = attackPhase;
+	}
+	
+	public boolean getAttackPhase() {
+		return attackPhase;
 	}
 
 	// Constructor for the GamePanel
@@ -25,8 +168,11 @@ public class GamePanel extends JPanel {
 		//this.setLayout(new GridLayout(3,1,5,5));
 		// Create a label to indicate whose turn it is / instruction
 		JPanel labelPanel = new JPanel(new GridLayout(2, 1, 5, 5));
-		instructionLabel = new JLabel("Place your ships on your Ocean Grid!");
+		instructionLabel = new JLabel("Place your ships on your Ocean Grid!", JLabel.CENTER);
+		errorLabel = new JLabel("", JLabel.CENTER);
+		errorLabel.setForeground(Color.RED);
 		labelPanel.add(instructionLabel);
+		labelPanel.add(errorLabel);
 		
 		// Create a middle panel for the grids and buttons
 		JPanel middlePanel = new JPanel(new GridLayout(1, 3, 5, 5));
@@ -37,7 +183,8 @@ public class GamePanel extends JPanel {
 		oceanGridButtons = new JButton[gridSize][gridSize];
 		for(int i = 0; i < gridSize; i++) {
 			for (int j = 0; j < gridSize; j++) {
-				JButton cell = new JButton("\t");
+				JButton cell = new JButton();
+				cell.setActionCommand("oceanCell");
 				cell.setPreferredSize(new Dimension(25, 25));
 				cell.addActionListener(gc);
 				oceanGridPanel.add(cell);
@@ -50,7 +197,7 @@ public class GamePanel extends JPanel {
 		JPanel bufferPanel = new JPanel(new GridLayout(3, 1, 5, 5));
 		JButton rotateShipButton = new JButton("Rotate Ship");
 		rotateShipButton.addActionListener(gc);
-		JButton lockShipsButton = new JButton("Lock Ships");
+		lockShipsButton = new JButton("Lock Ships");
 		lockShipsButton.addActionListener(gc);
 		JButton logOutButton = new JButton("Logout");
 		logOutButton.addActionListener(gc);
@@ -66,6 +213,7 @@ public class GamePanel extends JPanel {
 		for(int i = 0; i < gridSize; i++) {
 			for (int j = 0; j < gridSize; j++) {
 				JButton cell = new JButton();
+				cell.setActionCommand("targetCell");
 				cell.setPreferredSize(new Dimension(25, 25));
 				cell.addActionListener(gc);
 				targetGridPanel.add(cell);
@@ -74,20 +222,18 @@ public class GamePanel extends JPanel {
 		}
 		
 		// Add panel at the bottom to select a ship. When user clicks a ship from there, they then click on ocean grid and it places ship where they clicked on the grid
-		JPanel shipSelection = new JPanel(new GridLayout(5,1,5,5));
-		for (int i = 0; i < userShips.length;i++)
-		{
+		JPanel shipSelection = new JPanel(new GridLayout(1,5,5,5));
 		JPanel shipBuffer = new JPanel();
-			//draw ship
-			//determine alignent & size for ship
-				JButton shipButton = new JButton("Ship");
-				shipButton.setPreferredSize(new Dimension(25*userShips[i].getSize(),25));
-				shipButton.addActionListener(gc);
-				shipBuffer.add(shipButton);
-				shipSelection.add(shipBuffer);
-			
+		shipButtons = new JButton[userShips.length];
+		for (int i = 0; i < userShips.length; i++) {
+			JButton shipButton = new JButton("Ship, Size " + userShips[i].getSize());
+			shipButton.setActionCommand("Ship" + i);
+			shipButton.setPreferredSize(new Dimension(25*userShips[i].getSize(),25));
+			shipButton.addActionListener(gc);
+			shipSelection.add(shipButton);
+			shipButtons[i] = shipButton;
 		}
-		
+		shipBuffer.add(shipSelection);
 		
 		// Add the panels to the JFrame
 		this.setLayout(new BorderLayout());
@@ -95,7 +241,7 @@ public class GamePanel extends JPanel {
 		this.add(oceanGridPanel, BorderLayout.WEST);
 		this.add(bufferPanel, BorderLayout.CENTER);
 		this.add(targetGridPanel, BorderLayout.EAST);
-		this.add(shipSelection, BorderLayout.SOUTH);
+		this.add(shipBuffer, BorderLayout.SOUTH);
 		
 	}
 

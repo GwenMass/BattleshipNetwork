@@ -1,37 +1,63 @@
 package client;
 
-public class Ship {
+import java.io.Serializable;
+import java.awt.*;
+import java.util.*;
+
+public class Ship implements Serializable {
+	
 	private int size;
 	private boolean[] hits;
-	int x;
-	int y;
-	boolean horizontal;
+	private int x;
+	private int y;
+	private boolean horizontal;
+	private boolean placed;
+	private Color color;
 
 	// Constructor for a ship
 	public Ship(int s) {
 		this.size = s;
+		hits = new boolean[size];
+		horizontal = true;
+		placed = false;
+		
+		// Set a random grayscale color for this ship
+		Random rand = new Random();
+		int shade = rand.nextInt(100) + 50;
+		color = new Color(shade, shade, shade);
+	}
+	
+	public Color getColor() {
+		return color;
 	}
 	
 	//return size of ship
-	int getSize() {return this.size;}
+	public int getSize() {return this.size;}
 	
 	//rotate ship
-	void rotate() 
-	{
+	public void rotate() {
 		horizontal = !horizontal;
 	}
 	//return hits 
 	//PLACEHOLDER
-	boolean getHits() {return false;}
+	public boolean getHits() {return false;}
 	
 	//returns ship's X co-ord
-	int getX() {return this.x;}
+	public int getX() {return this.x;}
 	
 	//returns ship's Y co-ord
-	int getY() {return this.y;}
+	public int getY() {return this.y;}
 	
 	//returns true/false on if ship is horizontal
-	boolean isHorizontal() {return this.horizontal;}
+	public boolean isHorizontal() {return this.horizontal;}
+	
+	public boolean getPlaced() {
+		return placed;
+	}
+	
+	public void setPlaced(boolean placed) {
+		this.placed = placed;
+	}
 	
 	public void registerHit(int x, int y)
 	{
@@ -48,4 +74,3 @@ public class Ship {
 		}
 	}
 }
-
