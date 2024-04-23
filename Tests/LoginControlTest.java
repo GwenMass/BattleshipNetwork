@@ -1,23 +1,14 @@
 package Tests;
 
 import static org.junit.Assert.*;
-import java.awt.CardLayout;
-import java.awt.Component;
+import java.awt.*;
 import java.awt.event.ActionEvent;
-
-import javax.swing.JPanel;
-
-import org.junit.Test;
-
+import javax.swing.*;
+import org.junit.*;
 import client.*;
 
 public class LoginControlTest {
 	
-	
-    
-   
-    
-
 	@Test
 	public void testActionPerformed() 
 	{
@@ -50,41 +41,44 @@ public class LoginControlTest {
         		assertNotEquals(("You must enter a username and password."),loginPanel.getError());
         	}
         }
-        
-        
 	}
 
+	
 	@Test
-	public void testLoginSuccess() {
-		
-		
-		JPanel panel1 = new JPanel();
-		JPanel panel4 = new JPanel();
+	public void testLoginSuccess() 
+	{	
 		CardLayout cardLayout = new CardLayout();
-		JPanel container = new JPanel();
-		container.setLayout(cardLayout);
-		LoginControl loginControl = new LoginControl(container, null);
+		JPanel container = new JPanel(cardLayout);
+		
+		GameClient client = new GameClient();
+		LoginControl loginControl = new LoginControl(container, client);
+		client.setLoginControl(loginControl);
+		
+		JPanel panel1 = new LoginPanel(loginControl);
+		JPanel panel4 = new JPanel();
+		
 		container.add(panel1,"1");
 		container.add(panel4,"4");
-		//show panel 1
-		assertEquals(panel1, container.getComponent(0));
-        assertEquals(panel4, container.getComponent(1));
+		
+		cardLayout.show(container,  "1");
+		
         loginControl.loginSuccess();
-        //now show panel 4
+
         //determine if panel 4 is visible 
         Component visibleCard = null;
         for (Component comp : container.getComponents())
         {
         	if (comp.isVisible()) {
-        			visibleCard = comp;
+        		visibleCard = comp;
         	}
         }
-        assertEquals(visibleCard,container.getComponent(4));
-		
+        assertEquals(visibleCard,container.getComponent(1));
 	}
 
+	
 	@Test
-	public void testDisplayError() {
+	public void testDisplayError() 
+	{
 		JPanel container = new JPanel();
         CardLayout cardLayout = new CardLayout();
         container.setLayout(cardLayout);
