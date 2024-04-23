@@ -8,13 +8,18 @@ public class Ship {
 	boolean horizontal;
 
 	// Constructor for a ship
-	private Ship(int s) {
+	public Ship(int s) {
 		this.size = s;
 	}
 	
 	//return size of ship
 	int getSize() {return this.size;}
 	
+	//rotate ship
+	void rotate() 
+	{
+		horizontal = !horizontal;
+	}
 	//return hits 
 	//PLACEHOLDER
 	boolean getHits() {return false;}

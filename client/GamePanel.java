@@ -6,16 +6,23 @@ import java.awt.event.*;
 
 public class GamePanel extends JPanel {
 	
-	private final int gridSize = 10;
-	private Grid oceanGrid;
-	private Grid targetGrid;
-	private JButton[][] oceanGridButtons;
+	final int gridSize = 10;
+	private final Ship[] userShips = {new Ship(5),new Ship(4),new Ship(3),new Ship(3),new Ship(2)};
+	Grid oceanGrid;
+	Grid targetGrid;
+	JButton[][] oceanGridButtons;
 	private JButton[][] targetGridButtons;
 	private JLabel instructionLabel;
+	Ship selectedShip = null;
 	
+	public void setInstructionLabel(String message)
+	{
+		instructionLabel.setText(message);
+	}
+
 	// Constructor for the GamePanel
 	public GamePanel(GameControl gc) {
-		
+		//this.setLayout(new GridLayout(3,1,5,5));
 		// Create a label to indicate whose turn it is / instruction
 		JPanel labelPanel = new JPanel(new GridLayout(2, 1, 5, 5));
 		instructionLabel = new JLabel("Place your ships on your Ocean Grid!");
@@ -30,7 +37,7 @@ public class GamePanel extends JPanel {
 		oceanGridButtons = new JButton[gridSize][gridSize];
 		for(int i = 0; i < gridSize; i++) {
 			for (int j = 0; j < gridSize; j++) {
-				JButton cell = new JButton();
+				JButton cell = new JButton("\t");
 				cell.setPreferredSize(new Dimension(25, 25));
 				cell.addActionListener(gc);
 				oceanGridPanel.add(cell);
@@ -67,12 +74,29 @@ public class GamePanel extends JPanel {
 		}
 		
 		// Add panel at the bottom to select a ship. When user clicks a ship from there, they then click on ocean grid and it places ship where they clicked on the grid
+		JPanel shipSelection = new JPanel(new GridLayout(5,1,5,5));
+		for (int i = 0; i < userShips.length;i++)
+		{
+		JPanel shipBuffer = new JPanel();
+			//draw ship
+			//determine alignent & size for ship
+				JButton shipButton = new JButton("Ship");
+				shipButton.setPreferredSize(new Dimension(25*userShips[i].getSize(),25));
+				shipButton.addActionListener(gc);
+				shipBuffer.add(shipButton);
+				shipSelection.add(shipBuffer);
+			
+		}
+		
 		
 		// Add the panels to the JFrame
-		//add(labelPanel);
-		add(oceanGridPanel, BorderLayout.WEST);
-		add(bufferPanel, BorderLayout.CENTER);
-		add(targetGridPanel, BorderLayout.EAST);
+		this.setLayout(new BorderLayout());
+		this.add(labelPanel, BorderLayout.NORTH);
+		this.add(oceanGridPanel, BorderLayout.WEST);
+		this.add(bufferPanel, BorderLayout.CENTER);
+		this.add(targetGridPanel, BorderLayout.EAST);
+		this.add(shipSelection, BorderLayout.SOUTH);
+		
 	}
 
 }
