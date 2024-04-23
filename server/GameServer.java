@@ -13,6 +13,7 @@ import client.MenuData;
 import client.LobbyData;
 import client.GameData;
 import client.Grid;
+import client.EndGameData;
 import client.Error;
 
 public class GameServer extends AbstractServer {
@@ -280,12 +281,10 @@ public class GameServer extends AbstractServer {
 					
 					// Check opposing player's grid at those coordinates
 					String coordinatesContent = game.getPlayerTwoGrid().getCells()[data.getAttackingX()][data.getAttackingY()];
-					System.out.println("CoordinatesContent: " + coordinatesContent);
 					
 					// Coordinate is empty -> Miss
 					if(coordinatesContent.startsWith("Empty")) {
 						// Update opponent's grid
-						System.out.println("PLayer 1 Missed");
 						Grid oppGrid = game.getPlayerTwoGrid();
 						oppGrid.registerMiss(data.getAttackingX(), data.getAttackingY());
 						game.setPlayerTwoGrid(oppGrid);
@@ -294,9 +293,7 @@ public class GameServer extends AbstractServer {
 						GameData res = data;
 						res.setOceanGrid(null); // data security
 						res.setShotHit(false);
-						System.out.println("Broadcasted?");
 						sendToAllClients(res);
-						System.out.println("Broadcasted.");
 						
 					}
 					// Cordinate contains ship -> Hit
@@ -311,6 +308,17 @@ public class GameServer extends AbstractServer {
 						res.setOceanGrid(null); // data security
 						res.setShotHit(true);
 						sendToAllClients(res);
+						
+						// Check if opponent lost game
+						boolean endGame = oppGrid.checkLostGame();
+						if(endGame) {
+							// Broadcast end of game and reset Game
+							EndGameData endGameData = new EndGameData(game.getPlayerOneUsername(),game.getPlayerOneId());
+							sendToAllClients(endGameData);
+							game = new Game();
+							skip = true;
+						}
+						
 					}
 					// Coordinate contains already-attacked coordinate
 					else if(coordinatesContent.startsWith("Hit") || coordinatesContent.startsWith("Miss")) {
@@ -339,11 +347,9 @@ public class GameServer extends AbstractServer {
 					
 					// Check opposing player's grid at those coordinates
 					String coordinatesContent = game.getPlayerOneGrid().getCells()[data.getAttackingX()][data.getAttackingY()];
-					System.out.println("CoordinatesContent: " + coordinatesContent);
 					
 					// Coordinate is empty -> Miss
 					if(coordinatesContent.startsWith("Empty")) {
-						System.out.println("PLayer 2 Missed");
 						// Update opponent's grid
 						Grid oppGrid = game.getPlayerOneGrid();
 						oppGrid.registerMiss(data.getAttackingX(), data.getAttackingY());
@@ -353,9 +359,7 @@ public class GameServer extends AbstractServer {
 						GameData res = data;
 						res.setOceanGrid(null); // data security
 						res.setShotHit(false);
-						System.out.println("Broadcasted?");
 						sendToAllClients(res);
-						System.out.println("Broadcasted.");
 					}
 					// Cordinate contains ship -> Hit
 					else if(coordinatesContent.startsWith("Ship")){
@@ -369,6 +373,16 @@ public class GameServer extends AbstractServer {
 						res.setOceanGrid(null); // data security
 						res.setShotHit(true);
 						sendToAllClients(res);
+						
+						// Check if opponent lost game
+						boolean endGame = oppGrid.checkLostGame();
+						if(endGame) {
+							// Broadcast end of game and reset Game
+							EndGameData endGameData = new EndGameData(game.getPlayerOneUsername(),game.getPlayerOneId());
+							sendToAllClients(endGameData);
+							game = new Game();
+							skip = true;
+						}
 					}
 					// Coordinate contains already-attacked coordinate
 					else if(coordinatesContent.startsWith("Hit") || coordinatesContent.startsWith("Miss")) {

@@ -155,6 +155,16 @@ public class Game {
 		else
 			System.out.println("PlayerId does not match players in session.");
 	}
+	
+	public void retryGame() {
+		playerOneGrid = new Grid(10);
+		playerTwoGrid = new Grid(10);
+		playerOneReady = false;
+		playerTwoReady = false;
+		playerOneShipsLocked = false;
+		playerTwoShipsLocked = false;
+		attackPhase = false;
+	}
 
 	public Game() {
 		// Set fields to default variables when no players connected

@@ -55,10 +55,22 @@ public class Grid implements Serializable {
 	}
 	
 	public void registerHit(int x, int y) {
-		cells[x][y] = "Hit";
+		cells[x][y] = "Hit" + cells[x][y];
 	}
 	
 	public void registerMiss(int x, int y) {
 		cells[x][y] = "Miss";
+	}
+	
+	public boolean checkLostGame() {
+		for(int x = 0; x < cells.length; x++) {
+			for(int y = 0; y < cells.length; y++) {
+				if(cells[x][y].startsWith("Ship")) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
 	}
 }

@@ -19,7 +19,7 @@ public class EndGamePanel extends JPanel {
 		
 		// Create a panel for the label at the top of the GUI
 		JPanel labelPanel = new JPanel(new GridLayout(2, 1, 5, 5));
-		winnerLabel = new JLabel("Filler for [You won/lost] or [[Player] won/lost]", JLabel.CENTER);
+		winnerLabel = new JLabel("", JLabel.CENTER);
 		labelPanel.add(winnerLabel);
 		
 		// Create the "Retry" button

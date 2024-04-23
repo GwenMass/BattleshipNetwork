@@ -248,4 +248,13 @@ public class GameControl implements ActionListener {
 		GamePanel gamePanel = (GamePanel)container.getComponent(5);
 		gamePanel.setErrorLabel(message);
 	}
+	
+	public void endGame() {
+		GamePanel gamePanel = (GamePanel)container.getComponent(5);
+		gamePanel = new GamePanel(this);
+		
+		// Transition to EndGamePanel
+		CardLayout cardLayout = (CardLayout)container.getLayout();
+		cardLayout.show(container, "7");
+	}
 }

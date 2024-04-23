@@ -43,10 +43,10 @@ public class EndGameControl implements ActionListener {
 			cardLayout.show(container, "1");
 		}
 		
-		// The "Retry" button allows the user to replay the game. Send back to Lobby Panel
+		// The "Retry" button allows the user to replay the game. Send back to Menu Panel
 		else if(command.equals("Retry")) {
 			CardLayout cardLayout = (CardLayout)container.getLayout();
-			cardLayout.show(container, "5");
+			cardLayout.show(container, "4");
 		}
 	}
 	

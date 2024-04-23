@@ -201,8 +201,15 @@ public class GameClient extends AbstractClient{
 					gameControl.oppShotResult(data.getAttackingX(), data.getAttackingY(), data.getShotHit());
 					System.out.println(data.getShotHit() + " opp shot at " + data.getAttackingX() + ", " + data.getAttackingY());
 				}
-			}
-		    
+			}   
+		}
+		
+		else if (arg0 instanceof EndGameData) {
+			EndGameData data = (EndGameData)arg0;
+			
+			//If we received EndGameData, the game is over. Tell GameControl
+			endGameControl.updateWinnerLabel(data.getWinnerUsername() + " won! Retry or Logout.");
+			gameControl.endGame();
 		}
 	}
 	

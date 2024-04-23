@@ -69,13 +69,17 @@ public class GamePanel extends JPanel {
 		return userShips;
 	}
 	
+	public void setUserShips(Ship[] userShips) {
+		this.userShips = userShips;
+	}
+	
 	public void setSelectedShip(int i) {
 		// Remove border on previously selected ship
 		if(selectedShipIndex != -1) {
 			shipButtons[selectedShipIndex].setBorder(null);
 		}
 		// If new selectedShip is same as previous selectedShip (i.e., same ship clicked twice), unselect the ship
-		if(selectedShipIndex == i) {
+		if(selectedShipIndex == i || i == -1) {
 			selectedShipIndex = -1;
 			selectedShip = null;
 			return;
