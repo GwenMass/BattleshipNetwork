@@ -26,11 +26,11 @@ public class GameControl implements ActionListener {
 		// logout button removes the user from the game and returns to intial panel
 		if (command.equals("Logout"))
 		{
-			LobbyData data = new LobbyData();
+			GameData data = new GameData();
 			data.setId(client.getId());
-			data.setLeavingLobby(true);
+			data.setForfeit(true);
 				
-			//submit gameData to server
+			//submit GameData to server
 			try {
 				client.setPort(8300);
 				client.openConnection();

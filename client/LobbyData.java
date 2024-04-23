@@ -11,6 +11,15 @@ public class LobbyData implements Serializable {
 	private String playerTwoUsername;
 	private boolean playerOneReady;
 	private boolean playerTwoReady;
+	private boolean forfeit;
+	
+	public void setForfeit(boolean forfeit) {
+		this.forfeit = forfeit;
+	}
+	
+	public boolean getForfeit() {
+		return forfeit;
+	}
 	
 	public void setId(Integer id) {
 		this.id = id;
@@ -77,6 +86,7 @@ public class LobbyData implements Serializable {
 		setPlayerTwoUsername(null);
 		setPlayerOneReady(false);
 		setPlayerTwoReady(false);
+		setForfeit(false);
 	}
 	
 }

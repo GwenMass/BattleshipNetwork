@@ -4,12 +4,9 @@ import java.io.Serializable;
 
 public class Grid implements Serializable {
 	
-	private int gridSize;
 	private String cells[][];
-	private boolean isOceanGrid;
 	
 	public Grid(int gridSize) {
-		this.gridSize = gridSize;
 		//create grid CHECK ORIENTATION
 		this.cells = new String[gridSize][gridSize];
 		

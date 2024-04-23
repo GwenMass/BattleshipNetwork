@@ -213,8 +213,26 @@ public class GameServer extends AbstractServer {
 			GameData data = (GameData)arg0;
 			Object result;
 			
+			// User is forfeiting by logging out
+			if(data.getForfeit()) {
+				EndGameData res;
+				// Broadcast end of game and reset Game
+				if(game.getPlayerOneId().equals(data.getId())) {
+					res = new EndGameData(game.getPlayerTwoUsername(), game.getPlayerTwoId());
+					res.setForfeitUsername(game.getPlayerOneUsername());
+				}
+				else {
+					res = new EndGameData(game.getPlayerOneUsername(), game.getPlayerOneId());
+					res.setForfeitUsername(game.getPlayerTwoUsername());
+				}
+				res.setForfeitId(data.getId());
+				
+				sendToAllClients(res);
+				game = new Game();
+			}
+			
 			// User is locking their ships
-			if(data.getShipsLocked()) {
+			else if(data.getShipsLocked()) {
 				// Store their grid and the fact that they are locking
 				game.setPlayerShipsLocked(data.getId(), data.getShipsLocked());
 				

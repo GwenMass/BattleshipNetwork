@@ -1,7 +1,5 @@
 package client;
 
-import java.io.IOException;
-
 import ocsf.client.AbstractClient;
 
 public class GameClient extends AbstractClient{
@@ -194,12 +192,10 @@ public class GameClient extends AbstractClient{
 				if(data.getId() == id) {
 					// Tell the game controller if our shot hit or missed
 					gameControl.myShotResult(data.getAttackingX(), data.getAttackingY(), data.getShotHit());
-					System.out.println(data.getShotHit() + " my shot at " + data.getAttackingX() + ", " + data.getAttackingY());
 				}
 				else {
 					// Tell the game controller if the opponent's shot hit or missed
 					gameControl.oppShotResult(data.getAttackingX(), data.getAttackingY(), data.getShotHit());
-					System.out.println(data.getShotHit() + " opp shot at " + data.getAttackingX() + ", " + data.getAttackingY());
 				}
 			}   
 		}
@@ -208,7 +204,10 @@ public class GameClient extends AbstractClient{
 			EndGameData data = (EndGameData)arg0;
 			
 			//If we received EndGameData, the game is over. Tell GameControl
-			endGameControl.updateWinnerLabel(data.getWinnerUsername() + " won! Retry or Logout.");
+			if(data.getForfeitId() != null && data.getForfeitUsername() != null)
+				endGameControl.updateWinnerLabel(data.getForfeitUsername() + " forfeits; " + data.getWinnerUsername() + " won! Retry or Logout.");
+			else
+				endGameControl.updateWinnerLabel(data.getWinnerUsername() + " won! Retry or Logout.");
 			gameControl.endGame();
 		}
 	}
