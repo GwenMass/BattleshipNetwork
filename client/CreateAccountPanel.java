@@ -17,9 +17,16 @@ public class CreateAccountPanel extends JPanel {
 		return usernameField.getText();
 	}
 	  
+	public void setUsername(String username) {
+		usernameField.setText(username);
+	}
 	// Getter for the text in the password field.
 	public String getPassword() {
 		return new String(passwordField.getPassword());
+	}
+	public void setPassword(String password)
+	{
+		passwordField.setText(password);
 	}
 	  
 	// Getter for the text in the second password field.

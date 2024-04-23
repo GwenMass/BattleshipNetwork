@@ -12,7 +12,7 @@ public class ServerGUI extends JFrame {
 	private String[] labels = {"Port #", "Timeout"};
 	private JTextField[] textFields = new JTextField[labels.length];
 	private JTextArea log;
-	private JButton listen;
+	public JButton listen;
 	private JButton close;
 	private JButton stop;
 	private JButton quit;
@@ -29,7 +29,7 @@ public class ServerGUI extends JFrame {
 	    int i = 0;
 	    
 	    // Set the title and default close operation.
-	    this.setTitle("Chat Server");
+	    this.setTitle("BattleShip Server");
 	    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 	    // Create the status label.

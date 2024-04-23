@@ -6,9 +6,9 @@ import java.awt.event.*;
 
 public class LoginPanel extends JPanel {
 	// Private data fields for the important GUI components
-	private JTextField usernameField;
-	private JPasswordField passwordField;
-	private JLabel errorLabel;
+	JTextField usernameField;
+	JPasswordField passwordField;
+	JLabel errorLabel;
 	
 	// Getter for the text in the username field
 	public String getUsername() {
@@ -19,9 +19,22 @@ public class LoginPanel extends JPanel {
 		return new String(passwordField.getPassword());
 	}
 	
+	public void setUsername(String username)
+	{
+		usernameField.setText(username);
+	}
+	
+	public void setPassword(String password)
+	{
+		passwordField.setText(password);
+	}
+	
 	// Setter for the error text
 	public void setError(String error) {
 		errorLabel.setText(error);
+	}
+	public String getError() {
+		return errorLabel.getText();
 	}
 	
 	// Constructor for the Login Panel
