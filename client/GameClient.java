@@ -99,11 +99,11 @@ public class GameClient extends AbstractClient{
 			else if(message.startsWith("Turn")) {
 				if(message.equals("Turn" + id)) {
 					gameControl.setMyTurn(true);
-					gameControl.updateInstruction("It's your turn! Choose a cell of your opponent's to attack!");
+					gameControl.updateInstruction("It's your turn! Click a cell of your opponent's board on the right to attack!");
 				}
 				else {
 					gameControl.setMyTurn(false);
-					gameControl.updateInstruction("It's your opponent's turn.");
+					gameControl.updateInstruction("It's your opponent's turn. Prepare for attack!");
 				}
 			}
 			

@@ -193,7 +193,7 @@ public class GamePanel extends JPanel {
 		//this.setLayout(new GridLayout(3,1,5,5));
 		// Create a label to indicate whose turn it is / instruction
 		JPanel labelPanel = new JPanel(new GridLayout(2, 1, 5, 5));
-		instructionLabel = new JLabel("Place your ships on your Ocean Grid!", JLabel.CENTER);
+		instructionLabel = new JLabel("Place your ships on the board to the left, and then click \"Lock Ships\".", JLabel.CENTER);
 		errorLabel = new JLabel("", JLabel.CENTER);
 		errorLabel.setForeground(Color.RED);
 		labelPanel.add(instructionLabel);

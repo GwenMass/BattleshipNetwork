@@ -211,10 +211,12 @@ public class GameControl implements ActionListener {
 		if(hit) {
 			targetGrid.registerHit(attackingX, attackingY);
 			targetGridButtons[attackingX][attackingY].setBackground(Color.RED);
+			displayError("You hit!");
 		}
 		else {
 			targetGrid.registerMiss(attackingX, attackingY);
 			targetGridButtons[attackingX][attackingY].setBackground(Color.YELLOW);
+			displayError("You missed!");
 		}
 		
 		gamePanel.setTargetGrid(targetGrid);
@@ -229,10 +231,12 @@ public class GameControl implements ActionListener {
 		if(hit) {
 			oceanGrid.registerHit(attackingX, attackingY);
 			oceanGridButtons[attackingX][attackingY].setBackground(Color.RED);
+			displayError("Opponent hit your ship!");
 		}
 		else {
 			oceanGrid.registerMiss(attackingX, attackingY);
 			oceanGridButtons[attackingX][attackingY].setBackground(Color.YELLOW);
+			displayError("Opponent missed your ship!");
 		}
 		
 		gamePanel.setOceanGrid(oceanGrid);
