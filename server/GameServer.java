@@ -89,7 +89,7 @@ public class GameServer extends AbstractServer {
 	}
 
 	// When a message is received from a client, handle it
-	public void handleMessageFromClient(Object arg0, ConnectionToClient arg1) {		
+	public void handleMessageFromClient(Object arg0, ConnectionToClient arg1) {
 		// If we received LoginData, verify the account information
 		if (arg0 instanceof LoginData) {
 			// Check the username and password with the database

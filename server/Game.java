@@ -134,12 +134,7 @@ public class Game {
 	}
 	
 	public void removePlayer(Integer playerId) {
-		if(this.playerTwoId.equals(playerId)) {
-			setPlayerTwoId(null);
-			setPlayerTwoUsername(null);
-			setPlayerTwoReady(false);
-		}
-		else if(this.playerOneId.equals(playerId)) {
+		if(playerOneId.equals(playerId)) {
 			setPlayerOneId(getPlayerTwoId());
 			setPlayerOneUsername(getPlayerTwoUsername());
 			setPlayerOneReady(getPlayerTwoReady());
@@ -147,9 +142,14 @@ public class Game {
 			setPlayerTwoUsername(null);
 			setPlayerTwoReady(false);
 			
-			// If both players left, game not in progress
+			// If no players present, game not in progress
 			if(getPlayerOneId() == null)
 				setInProgress(false);
+		}
+		else if(playerTwoId.equals(playerId)) {
+			setPlayerTwoId(null);
+			setPlayerTwoUsername(null);
+			setPlayerTwoReady(false);
 		}
 		else
 			System.out.println("PlayerId does not match players in session.");

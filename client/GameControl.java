@@ -254,8 +254,12 @@ public class GameControl implements ActionListener {
 	}
 	
 	public void endGame() {
-		GamePanel gamePanel = (GamePanel)container.getComponent(5);
-		gamePanel = new GamePanel(this);
+		// Reset the gamePanel by removing it (also requires reseting subsequent views/panels (i.e., just the EndGamePanel)
+		EndGamePanel endGamePanel = (EndGamePanel)container.getComponent(6);	// store endGamePanel
+		container.remove(6); // remove endGamePanel
+		container.remove(5); // remove gamePanel
+		container.add(new GamePanel(this), "6"); // readd gamePanel, but reset everything
+		container.add(endGamePanel, "7");		// readd same endGamePanel
 		
 		// Transition to EndGamePanel
 		CardLayout cardLayout = (CardLayout)container.getLayout();

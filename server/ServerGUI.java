@@ -12,7 +12,7 @@ public class ServerGUI extends JFrame {
 	private String[] labels = {"Port #", "Timeout"};
 	private JTextField[] textFields = new JTextField[labels.length];
 	private JTextArea log;
-	public JButton listen;
+	private JButton listen;
 	private JButton close;
 	private JButton stop;
 	private JButton quit;
